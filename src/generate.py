@@ -9,7 +9,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont, ImageColor, ImageEnhance, ImageOps
 from tqdm import tqdm
 
-from src.enums import SuasColour, SuasShape
+from enums import SuasColour, SuasShape
 
 root_dir = Path(".").resolve()
 for o in [
@@ -101,7 +101,10 @@ def get_shape_img(shape: SuasShape):
 
 
 def main(argv):
-    for i in tqdm(range(30)):
+    no_to_generate = 30
+    if len(argv) == 2:
+        no_to_generate = int(argv[1])
+    for i in tqdm(range(no_to_generate)):
         while True:
             shape_colour = random.choice(list(SuasColour))
             letter_colour = random.choice(list(SuasColour))
@@ -130,4 +133,7 @@ def main(argv):
 
 
 if __name__ == "__main__":
+    if len(sys.argv) not in [1, 2]:
+        print("Incorrect usage! Usage: python3 generate.py [No. of images to generate]")
+        sys.exit(-1)
     main(sys.argv)

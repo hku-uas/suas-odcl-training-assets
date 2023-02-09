@@ -1,0 +1,15 @@
+{
+    "shape_colour": "GREEN",
+    "shape": "CIRCLE",
+    "letter_colour": "BLACK",
+    "letter": "O",
+    "x": 320,
+    "y": 98,
+    "bbox": [
+        308,
+        86,
+        332,
+        110
+    ],
+    "rot": 334.7352024097585
+}

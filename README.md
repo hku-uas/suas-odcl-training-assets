@@ -1,7 +1,6 @@
 # ODCL Training Asset
 
-Artificially generated images and footage for training ODCL (Object Detection, Classification, Localization) in SUAS
-Competition.
+Artificially generated images for training ODCL (Object Detection, Classification, Localization) in SUAS Competition.
 
 ---
 
@@ -21,12 +20,35 @@ simple colours (e.g. red, green, black) (For a full list of shapes and colours, 
 a big capital letter on them. For cardboard cutouts, the drone should also be able to recognise the shape, colour and
 letter on it.
 
-This repository contains scripts and the generated images and footage for training the OCDL (Object Detection,
-Classification, Localization) of the above objects.
+This repository contains scripts and the generated images for training the OCDL (Object Detection, Classification,
+Localization) of the above objects.
 
-## File Structure
+## Generating Images
 
-For artificially generated images of aerial view of cardboard cutouts, they are `{Random ID}.png`s inside `output/`.
+By default, there are some example images inside `output`. To generate more images, run the following commands.
+
+1. Clone the repository and cd into the directory
+
+```
+git clone https://github.com/hku-uas/suas-odcl-training-assets.git
+cd suas-odcl-training-assets
+```
+
+2. Install the required dependencies
+
+```
+ pip3 install -r requirements.txt
+```
+
+3. Run the script
+
+```
+python3 ./src/generate.py [No. of images to generate]
+```
+
+---
+
+For generated images of aerial view of cardboard cutouts, they are `{Random ID}.png`s inside `output/`.
 For each `.png`, there is a `.json` describing the location and details of the cardboard cutout inside the image.
 
 The `.json` schema is as follows.
@@ -49,9 +71,10 @@ The `.json` schema is as follows.
 }
 ```
 
-- `x` and `y` are coordinates of the cardboard cutout (The more down, the higher the y-value). `bbox` is the bounding
-  box (left, top, right, bottom) and `rot` is the rotation in degrees.
+- `x` and `y` are coordinates of the cardboard cutout. `bbox` is the bounding box (left, top, right, bottom) and `rot`
+  is the rotation in degrees.
 
+![Reference](https://cdn.tutsplus.com/cdn-cgi/image/width=360/net/uploads/legacy/916_canvas1/1.jpg)
 
 - `shape` is the shape of the cardboard cutout. Valid shapes are:
 
