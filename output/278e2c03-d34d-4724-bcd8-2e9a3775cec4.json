@@ -1,0 +1,15 @@
+{
+    "shape_colour": "ORANGE",
+    "shape": "TRAPEZOID",
+    "letter_colour": "RED",
+    "letter": "V",
+    "x": 202,
+    "y": 55,
+    "bbox": [
+        190,
+        43,
+        214,
+        67
+    ],
+    "rot": 35.50724690519561
+}

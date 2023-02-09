@@ -1,0 +1,15 @@
+{
+    "shape_colour": "BLACK",
+    "shape": "RECTANGLE",
+    "letter_colour": "BLUE",
+    "letter": "F",
+    "x": 262,
+    "y": 351,
+    "bbox": [
+        250,
+        339,
+        274,
+        363
+    ],
+    "rot": 112.70723867851291
+}

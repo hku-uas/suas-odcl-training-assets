@@ -1,0 +1,15 @@
+{
+    "shape_colour": "YELLOW",
+    "shape": "PENTAGON",
+    "letter_colour": "GREEN",
+    "letter": "X",
+    "x": 378,
+    "y": 150,
+    "bbox": [
+        366,
+        138,
+        390,
+        162
+    ],
+    "rot": 72.90281663812398
+}

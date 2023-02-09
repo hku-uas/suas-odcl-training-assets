@@ -1,0 +1,15 @@
+{
+    "shape_colour": "GRAY",
+    "shape": "STAR",
+    "letter_colour": "PURPLE",
+    "letter": "O",
+    "x": 61,
+    "y": 72,
+    "bbox": [
+        49,
+        60,
+        73,
+        84
+    ],
+    "rot": 54.6665300527535
+}

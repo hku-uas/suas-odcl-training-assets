@@ -1,0 +1,15 @@
+{
+    "shape_colour": "PURPLE",
+    "shape": "HEXAGON",
+    "letter_colour": "BLACK",
+    "letter": "X",
+    "x": 55,
+    "y": 163,
+    "bbox": [
+        43,
+        151,
+        67,
+        175
+    ],
+    "rot": 72.10765776582029
+}

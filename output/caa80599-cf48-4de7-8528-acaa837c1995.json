@@ -1,0 +1,15 @@
+{
+    "shape_colour": "RED",
+    "shape": "TRAPEZOID",
+    "letter_colour": "ORANGE",
+    "letter": "R",
+    "x": 110,
+    "y": 427,
+    "bbox": [
+        98,
+        415,
+        122,
+        439
+    ],
+    "rot": 160.53238426957515
+}

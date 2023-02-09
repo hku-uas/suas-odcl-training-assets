@@ -1,0 +1,15 @@
+{
+    "shape_colour": "RED",
+    "shape": "CIRCLE",
+    "letter_colour": "YELLOW",
+    "letter": "P",
+    "x": 112,
+    "y": 107,
+    "bbox": [
+        100,
+        95,
+        124,
+        119
+    ],
+    "rot": 252.5307043188818
+}
