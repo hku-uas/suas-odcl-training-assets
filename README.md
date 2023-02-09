@@ -2,6 +2,8 @@
 
 Artificially generated images for training ODCL (Object Detection, Classification, Localization) in SUAS Competition.
 
+![](https://raw.githubusercontent.com/hku-uas/suas-odcl-training-assets/master/output/39b4be6e-61b3-4fcd-800e-b6757c38eaa4.png)
+
 ---
 
 From the 2023 SUAS Competition rule book,
