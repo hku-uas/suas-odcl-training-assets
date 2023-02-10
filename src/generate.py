@@ -2,9 +2,11 @@ import json
 import random
 import string
 import sys
+import time
 import uuid
 from math import ceil
 from pathlib import Path
+from typing import Optional
 
 from PIL import Image, ImageDraw, ImageFont, ImageColor, ImageEnhance, ImageOps
 from tqdm import tqdm
@@ -21,14 +23,31 @@ for o in [
         sys.exit(-1)
 
 
+def static_vars(**kwargs):
+    def decorate(func):
+        for k in kwargs:
+            setattr(func, k, kwargs[k])
+        return func
+
+    return decorate
+
+
+@static_vars(aerial_bgs=None)
 def generate_aerial(cutout_img: Image) -> Image:
+    # Load all aerial backgrounds and cache them
+    if generate_aerial.aerial_bgs is None:
+        generate_aerial.aerial_bgs = []
+        for bg_path in (root_dir / "assets" / "bg_field").glob("*.jpg"):
+            generate_aerial.aerial_bgs.append(
+                Image.open(bg_path)
+            )
+
     # Create canvas
     canvas = Image.new("RGBA", (512, 512), (0, 0, 0, 255))
 
     # Paste background on canvas
-    bg_path = random.choice(list((root_dir / "assets" / "bg_field").glob("*.jpg")))
-    bg_img = Image.open(bg_path)
-    bg_img = bg_img.rotate(random.uniform(0, 100), expand=True, resample=Image.BILINEAR)
+    bg_img = random.choice(generate_aerial.aerial_bgs).copy()
+    bg_img = bg_img.rotate(random.uniform(0, 100), expand=True)
     # bg_img.thumbnail((canvas.size[0], canvas.size[1]))
     bg_img = bg_img.resize((int(canvas.size[0] * 2.5), int(canvas.size[1] * 2.5)))
     bg_offset = ((canvas.size[0] - bg_img.size[0]) // 2, (canvas.size[1] - bg_img.size[1]) // 2)
@@ -89,22 +108,36 @@ def generate_shape(
     return canvas
 
 
+@static_vars(all_shape_imgs=None)
 def get_shape_img(shape: SuasShape):
-    with Image.open(
-            next((root_dir / "assets" / "foamboard_shapes").glob("*.png"), None)
-    ) as all_shape_png:
-        shape_idx = shape.value
-        x = (shape_idx % 8) * 200
-        y = (shape_idx // 8) * 200
-        shape_img = all_shape_png.crop((x, y, x + 200, y + 200))
-    return shape_img
+    if get_shape_img.all_shape_imgs is None:
+        get_shape_img.all_shape_imgs = []
+        with Image.open(
+                next((root_dir / "assets" / "foamboard_shapes").glob("*.png"), None)
+        ) as all_shape_png:
+            for i in range(len(list(SuasShape))):
+                x = (i % 8) * 200
+                y = (i // 8) * 200
+                get_shape_img.all_shape_imgs.append(
+                    all_shape_png.crop((x, y, x + 200, y + 200))
+                )
+    return get_shape_img.all_shape_imgs[shape.value]
+
+
+@static_vars(last=time.perf_counter())
+def stopwatch(section_name: Optional[str] = None):
+    now = time.perf_counter()
+    elapsed = now - stopwatch.last
+    if section_name is not None:
+        tqdm.write(f"[Stopwatch][{section_name}]: {elapsed:.4f}s")
+    stopwatch.last = time.perf_counter()
 
 
 def main(argv):
     no_to_generate = 30
     if len(argv) == 2:
         no_to_generate = int(argv[1])
-    for i in tqdm(range(no_to_generate)):
+    for i in tqdm(range(no_to_generate), file=sys.stdout):
         while True:
             shape_colour = random.choice(list(SuasColour))
             letter_colour = random.choice(list(SuasColour))
@@ -113,23 +146,29 @@ def main(argv):
         shape = random.choice(list(SuasShape))
         letter = random.choice(string.ascii_uppercase)
 
+        # stopwatch()
+
         shape_img = generate_shape(shape_colour, shape, letter_colour, letter)
+        # stopwatch("generate_shape")
 
         aerial_img, obj_pos_x, obj_pos_y, obj_bbox, obj_rot = generate_aerial(shape_img)
+        # stopwatch("generate_aerial")
+
+        json_content = {
+            "shape_colour": shape_colour.name,
+            "shape": shape.name,
+            "letter_colour": letter_colour.name,
+            "letter": letter,
+            "x": obj_pos_x,
+            "y": obj_pos_y,
+            "bbox": obj_bbox,
+            "rot": obj_rot
+        }
+
         output_stem = uuid.uuid4()
-        output_path = root_dir / "output" / f"{output_stem}.png"
-        aerial_img.save(output_path)
+        aerial_img.save(root_dir / "output" / f"{output_stem}.png")
         with open(root_dir / "output" / f"{output_stem}.json", "w", encoding="utf8") as f:
-            json.dump({
-                "shape_colour": shape_colour.name,
-                "shape": shape.name,
-                "letter_colour": letter_colour.name,
-                "letter": letter,
-                "x": obj_pos_x,
-                "y": obj_pos_y,
-                "bbox": obj_bbox,
-                "rot": obj_rot
-            }, f, indent=4)
+            json.dump(json_content, f, indent=4)
 
 
 if __name__ == "__main__":
