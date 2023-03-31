@@ -152,6 +152,8 @@ def main(argv):
         # stopwatch("generate_shape")
 
         aerial_img, obj_pos_x, obj_pos_y, obj_bbox, obj_rot = generate_aerial(shape_img)
+        obj_width = obj_bbox[2] - obj_bbox[0]
+        obj_height = obj_bbox[3] - obj_bbox[1]
         # stopwatch("generate_aerial")
 
         json_content = {
@@ -169,6 +171,11 @@ def main(argv):
         aerial_img.save(root_dir / "output" / f"{output_stem}.png")
         with open(root_dir / "output" / f"{output_stem}.json", "w", encoding="utf8") as f:
             json.dump(json_content, f, indent=4)
+
+        width, height = aerial_img.size[0], aerial_img.size[1]
+
+        with open(root_dir / "output" / f"{output_stem}.txt", "w", encoding="utf8") as f:
+            f.write(f"0 {obj_pos_x / width} {obj_pos_y / height} {obj_width / width} {obj_height / height}")
 
 
 if __name__ == "__main__":
