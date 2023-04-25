@@ -31,9 +31,11 @@ def generate_full(_):
     g = GroundLayer()
     c = CutoutLayer(shape_colour, shape, letter_colour, letter)
 
-    o = Image.new("RGBA", (512, 512))
-    o.paste(g.canvas)
-    o.paste(c.canvas, mask=c.canvas)
+    # o = Image.new("RGBA", (512, 512))
+    # o.paste(g.canvas)
+    # o.paste(c.canvas, mask=c.canvas)
+
+    o = Image.alpha_composite(g.canvas, c.canvas)
 
     output_stem = uuid.uuid4()
     o.save(root_dir / "output" / f"{output_stem}.png")

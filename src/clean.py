@@ -7,6 +7,7 @@ if input("Are you sure [Y/n]?") != "Y":
 files = []
 
 dataset_dir = [
+    Path("../output"),
     Path("../output_full"),
     Path("../output_letters"),
     Path("../output_shapes"),

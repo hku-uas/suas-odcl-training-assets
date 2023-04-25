@@ -91,7 +91,6 @@ class CutoutLayer:
                     pixel_colour_hsv = h, s, np.interp(x_progress, [0, 1], [v - 40, v])
                     pixel_colour_rgb = *colorsys.hsv_to_rgb(*pixel_colour_hsv), a
                     pixel_data[x, y] = tuple(int(o) for o in pixel_colour_rgb)
-        print(shape_colour)
 
         # Paste cardboard on canvas
         # img_shape = img_shape.resize((int(layer_size[0] * .9), int(layer_size[0] * .9)))
