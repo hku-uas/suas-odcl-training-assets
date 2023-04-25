@@ -1,0 +1,46 @@
+
+    # with open(root_dir / "output" / f"{output_stem}.json", "w", encoding="utf8") as f:
+    #     json.dump(
+    #         {
+    #             "categories": [
+    #                 {
+    #                     "id": 0,
+    #                     "name": "cutout",
+    #                     "supercategory": "none"
+    #                 },
+    #                 {
+    #                     "id": 1,
+    #                     "name": "letter",
+    #                     "supercategory": "none"
+    #                 }
+    #             ],
+    #             "images": [
+    #                 {
+    #                     "id": 0,
+    #                     "file_name": f"{output_stem}.png",
+    #                     "height": 512,
+    #                     "width": 512,
+    #                 }
+    #             ],
+    #             "annotations": [
+    #                 {
+    #                     "id": 0,
+    #                     "image_id": 0,
+    #                     "category_id": 0,
+    #                     "bbox": obj_bbox,
+    #                     "area": 0,
+    #                     "segmentation": transformed_path_shape,
+    #                     "iscrowd": 0
+    #                 },
+    #                 {
+    #                     "id": 1,
+    #                     "image_id": 0,
+    #                     "category_id": 1,
+    #                     "bbox": obj_bbox,
+    #                     "area": 0,
+    #                     "segmentation": transformed_path_letter,
+    #                     "iscrowd": 0
+    #                 }
+    #             ]
+    #         }, f, indent=4
+    #     )
