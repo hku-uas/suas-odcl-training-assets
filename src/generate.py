@@ -79,7 +79,7 @@ if __name__ == "__main__":
     if len(sys.argv) == 2:
         no_to_generate = int(sys.argv[1])
 
-    process_map(generate_full, range(0, no_to_generate), max_workers=20, file=sys.stdout, chunksize=1)
+    process_map(generate_full, range(0, no_to_generate), max_workers=None, file=sys.stdout, chunksize=1)
 
     # for i in tqdm(range(no_to_generate), file=sys.stdout):
     # generate_full(None)

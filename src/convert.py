@@ -8,7 +8,7 @@ from tqdm.contrib.concurrent import process_map
 
 from src.common.enums import SuasShape
 from src.definitions import root_dir
-
+6
 output_full = root_dir / "output"
 paths_img = list(output_full.glob("*.png"))
 
@@ -64,5 +64,5 @@ if __name__ == '__main__':
     with open(output_letters / "_.labels", "w") as f:
         f.write("\n".join(list(string.ascii_uppercase)))
 
-    process_map(convert, paths_img, max_workers=10, file=sys.stdout)
+    process_map(convert, paths_img, max_workers=None, file=sys.stdout)
     # convert(paths_img[0])
