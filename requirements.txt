@@ -1,2 +1,4 @@
-Pillow
-tqdm
+Pillow~=9.4.0
+tqdm~=4.65.0
+numpy~=1.24.2
+opencv-python~=4.7.0.72
