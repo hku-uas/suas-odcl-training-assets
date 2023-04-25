@@ -91,6 +91,7 @@ class CutoutLayer:
                     pixel_colour_hsv = h, s, np.interp(x_progress, [0, 1], [v - 40, v])
                     pixel_colour_rgb = *colorsys.hsv_to_rgb(*pixel_colour_hsv), a
                     pixel_data[x, y] = tuple(int(o) for o in pixel_colour_rgb)
+        print(shape_colour)
 
         # Paste cardboard on canvas
         # img_shape = img_shape.resize((int(layer_size[0] * .9), int(layer_size[0] * .9)))
@@ -114,7 +115,7 @@ class CutoutLayer:
         layer_shape = ImageEnhance.Color(layer_shape).enhance(1.5)
         layer_shape = ImageEnhance.Brightness(layer_shape).enhance(3)
         layer_shape = ImageEnhance.Contrast(layer_shape).enhance(.7)
-        layer_shape = layer_shape.filter(ImageFilter.GaussianBlur(radius=2))
+        layer_shape = layer_shape.filter(ImageFilter.GaussianBlur(radius=3))
 
         # Pasting the small cutout layer on the big canvas with random position and rotation
         layer_shape = layer_shape.rotate(self.rot, expand=True, resample=Image.BILINEAR)
@@ -154,6 +155,9 @@ class CutoutLayer:
             self.bbox_letter[3] - self.bbox_letter[1]
         )
 
+        # tmp fix cuz original pos defined above is a little not accurate
+        self.pos = (self.bbox_shape[2] + self.bbox_shape[0]) / 2, (self.bbox_shape[3] + self.bbox_shape[1]) / 2
+
         larger_side = max(self.size_shape)
         self.bbox_padded = (
             self.pos[0] - (larger_side / 2) - 5,
@@ -162,6 +166,8 @@ class CutoutLayer:
             self.pos[1] + (larger_side / 2) + 5
         )
 
-        # ImageDraw.Draw(self.canvas).rectangle(self.bbox_padded, outline="yellow")
-        # ImageDraw.Draw(self.canvas).rectangle(self.bbox_shape, outline="blue")
-        # ImageDraw.Draw(self.canvas).rectangle(self.bbox_letter, outline="red")
+        # draw = ImageDraw.Draw(self.canvas)
+        # draw.point(self.pos, fill="purple")
+        # draw.rectangle(self.bbox_padded, outline="yellow")
+        # draw.rectangle(self.bbox_shape, outline="blue")
+        # draw.rectangle(self.bbox_letter, outline="red")

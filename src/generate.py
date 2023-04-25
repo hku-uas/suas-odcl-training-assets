@@ -9,8 +9,8 @@ from PIL import Image
 from tqdm.contrib.concurrent import process_map
 
 from src.common.enums import SuasColour, SuasShape
-from src.pipeline.generate_cutout_layer import CutoutLayer
-from src.pipeline.generate_ground_layer import GroundLayer
+from src.pipeline.cutout_layer import CutoutLayer
+from src.pipeline.ground_layer import GroundLayer
 
 root_dir = Path("..").resolve()
 for o in [
@@ -31,11 +31,9 @@ def generate_full(_):
     g = GroundLayer()
     c = CutoutLayer(shape_colour, shape, letter_colour, letter)
 
-    o = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
+    o = Image.new("RGBA", (512, 512))
     o.paste(g.canvas)
     o.paste(c.canvas, mask=c.canvas)
-
-    o.save("test.png")
 
     output_stem = uuid.uuid4()
     o.save(root_dir / "output" / f"{output_stem}.png")
@@ -79,7 +77,7 @@ if __name__ == "__main__":
     if len(sys.argv) == 2:
         no_to_generate = int(sys.argv[1])
 
-    process_map(generate_full, range(0, no_to_generate), max_workers=10, file=sys.stdout, chunksize=1)
+    process_map(generate_full, range(0, no_to_generate), max_workers=20, file=sys.stdout, chunksize=1)
 
     # for i in tqdm(range(no_to_generate), file=sys.stdout):
-    # generate_image(None)
+    # generate_full(None)

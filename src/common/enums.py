@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum, IntEnum
 
 
 class SuasColour(Enum):
@@ -14,7 +14,7 @@ class SuasColour(Enum):
     ORANGE = "#FFA500"
 
 
-class SuasShape(Enum):
+class SuasShape(IntEnum):
     CIRCLE = 0
     SEMICIRCLE = 1
     QUARTER_CIRCLE = 2
