@@ -9,10 +9,10 @@ from PIL import Image
 from tqdm.contrib.concurrent import process_map
 
 from src.common.enums import SuasColour, SuasShape
+from src.definitions import root_dir
 from src.pipeline.cutout_layer import CutoutLayer
 from src.pipeline.ground_layer import GroundLayer
 
-root_dir = Path("..").resolve()
 for o in [
     root_dir / "assets",
     root_dir / "output"

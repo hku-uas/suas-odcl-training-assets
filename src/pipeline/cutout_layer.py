@@ -9,13 +9,14 @@ import numpy as np
 from PIL import Image, ImageColor, ImageDraw, ImageFont, ImageEnhance, ImageFilter, ImageOps
 
 from src.common.enums import SuasColour, SuasShape
+from src.definitions import root_dir
 from src.utils.transformation import transform_coords
 
 
 class CutoutLayer:
     img_shapes = []
     with Image.open(
-            next(Path("../assets/foamboard_shapes").glob("*.png"), None)
+            next((root_dir / "assets" / "foamboard_shapes").glob("*.png"), None)
     ) as all_shape_png:
         for i in range(len(list(SuasShape))):
             x = (i % 8) * 200
@@ -23,7 +24,7 @@ class CutoutLayer:
             img_shapes.append(
                 all_shape_png.crop((x, y, x + 200, y + 200))
             )
-    font_path = next(Path("../assets/foamboard_letter_fonts").glob("*.otf"), None)
+    font_path = next((root_dir / "assets" / "foamboard_letter_fonts").glob("*.otf"), None)
     font = ImageFont.truetype(str(font_path.resolve()), 100)
 
     @staticmethod

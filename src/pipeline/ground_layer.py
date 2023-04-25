@@ -3,12 +3,13 @@ from pathlib import Path
 
 from PIL import Image
 
+from src.definitions import root_dir
 from src.utils.func_static_vars import static_vars
 
 
 class GroundLayer:
     aerial_bgs = []
-    for bg_path in Path("../assets/bg_field").glob("*.jpg"):
+    for bg_path in (root_dir / "assets" / "bg_field").glob("*.jpg"):
         aerial_bgs.append(Image.open(bg_path))
 
     def __init__(self):
