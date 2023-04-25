@@ -1,16 +1,18 @@
 import os
 from pathlib import Path
 
+from src.definitions import root_dir
+
 if input("Are you sure [Y/n]?") != "Y":
     exit()
 
 files = []
 
 dataset_dir = [
-    Path("../output"),
-    Path("../output_full"),
-    Path("../output_letters"),
-    Path("../output_shapes"),
+    (root_dir / "output"),
+    (root_dir / "output_full"),
+    (root_dir / "output_letters"),
+    (root_dir / "output_shapes"),
 ]
 for o in dataset_dir:
     if o.exists() and o.is_dir():

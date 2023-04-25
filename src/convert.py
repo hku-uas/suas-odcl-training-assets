@@ -7,14 +7,15 @@ from PIL import Image
 from tqdm.contrib.concurrent import process_map
 
 from src.common.enums import SuasShape
+from src.definitions import root_dir
 
-output_full = Path("../output")
+output_full = root_dir / "output"
 paths_img = list(output_full.glob("*.png"))
 
-output_shapes = Path("../output_shapes")
+output_shapes = root_dir / "output_shapes"
 output_shapes.mkdir(exist_ok=True)
 
-output_letters = Path("../output_letters")
+output_letters = root_dir / "output_letters"
 output_letters.mkdir(exist_ok=True)
 
 
