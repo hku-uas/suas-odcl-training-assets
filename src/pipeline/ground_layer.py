@@ -9,7 +9,6 @@ from src.utils.func_static_vars import static_vars
 
 class GroundLayer:
     aerial_bgs = []
-    print("wowooww")
     for bg_path in (root_dir / "assets" / "bg_field").glob("*.jpg"):
         aerial_bgs.append(Image.open(bg_path).copy())
 

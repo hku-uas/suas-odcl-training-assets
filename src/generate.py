@@ -7,15 +7,12 @@ from itertools import repeat
 from pathlib import Path
 
 from PIL import Image
-from PIL.ImageFile import ImageFile
 from tqdm.contrib.concurrent import process_map
 
 from src.common.enums import SuasColour, SuasShape
 from src.definitions import root_dir
 from src.pipeline.cutout_layer import CutoutLayer
 from src.pipeline.ground_layer import GroundLayer
-
-ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
 def generate_full(output_dir: Path):
@@ -78,7 +75,7 @@ if __name__ == "__main__":
 
     process_map(generate_full,
                 [raw_output_dir for o in range(0, no_to_generate)],
-                max_workers=4, file=sys.stdout, chunksize=1)
+                max_workers=None, file=sys.stdout, chunksize=1)
 
     # for i in tqdm(range(no_to_generate), file=sys.stdout):
     # generate_full(None)
