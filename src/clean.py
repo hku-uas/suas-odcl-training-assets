@@ -1,26 +1,20 @@
 import os
+import shutil
 from pathlib import Path
 
 from src.definitions import root_dir
 
-if input("Are you sure [Y/n]?") != "Y":
+dir_output = (root_dir / "output").resolve()
+if not dir_output.exists():
+    print(f"{dir_output} does not exist.")
     exit()
 
-files = []
-
-dataset_dir = [
-    (root_dir / "output"),
-    (root_dir / "output_full"),
-    (root_dir / "output_letters"),
-    (root_dir / "output_shapes"),
-]
-for o in dataset_dir:
-    if o.exists() and o.is_dir():
-        files.extend(list(o.glob("*.png")))
-        files.extend(list(o.glob("*.json")))
-        files.extend(list(o.glob("*.txt")))
-
-files = sorted(files)
-
-for f in files:
-    os.unlink(f)
+dir_datasets = list(dir_output.glob("dataset_*"))
+for dir_dataset in dir_datasets:
+    path_runs = dir_dataset / "runs"
+    if path_runs.exists():
+        print(f"Removing {path_runs}...")
+        shutil.rmtree(path_runs)
+    for p in dir_dataset.rglob("*.cache"):
+        print(f"Removing {p}...")
+        os.remove(p)
