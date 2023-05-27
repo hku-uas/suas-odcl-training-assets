@@ -27,21 +27,24 @@ class CutoutLayer:
     font_path = next((root_dir / "assets" / "foamboard_letter_fonts").glob("*.otf"), None)
     font = ImageFont.truetype(str(font_path.resolve()), 100)
 
-    @staticmethod
-    def trace_contour_points(layer: PIL.Image):
-        cv_layer = np.array(layer)
+    def get_corners_pos(self, bbox):
+        l, t, r, b = bbox
+        return [(l, t), (r, t), (r, b), (l, b)]
 
-        # Split the image into its channels
-        r, g, b, a = cv2.split(cv_layer)
-
-        # Threshold the alpha channel to create a binary mask
-        ret, thresh = cv2.threshold(a, 0, 255, cv2.THRESH_BINARY)
-
-        # Find the contours of the binary mask
-        contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-        keypoints = np.vstack(contours).squeeze()
-
-        return keypoints
+    def transform_image(self, img, pos, rot, scale):
+        img = img.copy()
+        img = img.rotate(rot, expand=True, resample=Image.BILINEAR)
+        img = ImageOps.scale(img, scale)
+        img_dst = Image.new(mode="RGBA", size=(512, 512))
+        img_dst.paste(
+            img,
+            box=(
+                pos[0] - (img.size[0] // 2),
+                pos[1] - (img.size[0] // 2)
+            ),
+            mask=img
+        )
+        return img_dst
 
     @staticmethod
     def calc_bbox(coords: np.ndarray):
@@ -80,9 +83,8 @@ class CutoutLayer:
         )
 
         # Set colour of cardboard
+        # TODO fix rgb_to_hsv should input 0-1 values lollll
         shape_colour_rgba = ImageColor.getcolor(shape_colour.value, "RGB")
-
-        #TODO fix rgb_to_hsv should input 0-1 values lollll
         shape_colour_hsv = colorsys.rgb_to_hsv(*shape_colour_rgba)
         pixel_data = layer_shape.load()
         for y in range(layer_size[0]):
@@ -95,9 +97,8 @@ class CutoutLayer:
                     pixel_colour_rgb = *colorsys.hsv_to_rgb(*pixel_colour_hsv), a
                     pixel_data[x, y] = tuple(int(o) for o in pixel_colour_rgb)
 
-        # Paste cardboard on canvas
-        # img_shape = img_shape.resize((int(layer_size[0] * .9), int(layer_size[0] * .9)))
-        points_shape = self.trace_contour_points(layer_shape)
+        layer_shape = layer_shape.rotate(self.rot, expand=True, resample=Image.BILINEAR)
+        layer_shape = self.transform_image(layer_shape, self.pos, self.rot, .15)
 
         # Add letter to canvas
         layer_letter = Image.new(mode="RGBA", size=layer_size)
@@ -109,67 +110,21 @@ class CutoutLayer:
             font=CutoutLayer.font,
             fill=letter_colour.value
         )
-
-        layer_shape.paste(layer_letter, (0, 0), mask=layer_letter)
-        points_letter = self.trace_contour_points(layer_letter)
+        layer_letter = self.transform_image(layer_letter, self.pos, self.rot, .15)
 
         # Reduce contrast of canvas
-        layer_shape = ImageEnhance.Color(layer_shape).enhance(1.5)
-        layer_shape = ImageEnhance.Brightness(layer_shape).enhance(3)
-        layer_shape = ImageEnhance.Contrast(layer_shape).enhance(.7)
-        layer_shape = layer_shape.filter(ImageFilter.GaussianBlur(radius=3))
+        self.canvas.paste(layer_shape, (0, 0), mask=layer_shape)
+        self.canvas.paste(layer_letter, (0, 0), mask=layer_letter)
+        # self.canvas = ImageEnhance.Color(self.canvas).enhance(1.5)
+        self.canvas = ImageEnhance.Contrast(self.canvas).enhance(.8)
+        self.canvas = self.canvas.filter(ImageFilter.GaussianBlur(radius=.5))
 
-        # Pasting the small cutout layer on the big canvas with random position and rotation
-        layer_shape = layer_shape.rotate(self.rot, expand=True, resample=Image.BILINEAR)
-        layer_shape = ImageOps.scale(layer_shape, .15)
-
-        self.canvas.paste(
-            layer_shape,
-            box=(
-                self.pos[0] - (layer_shape.size[0] // 2),
-                self.pos[1] - (layer_shape.size[0] // 2)
-            ),
-            mask=layer_shape
-        )
-
-        self.points_shape_transformed = transform_coords(
-            points_shape - (np.array(layer_size) / 2),
-            self.rot,
-            .2,
-            self.pos
-        )
-        self.points_letter_transformed = transform_coords(
-            points_letter - (np.array(layer_size) / 2),
-            self.rot,
-            .2,
-            self.pos
-        )
-
-        self.bbox_shape = self.calc_bbox(self.points_shape_transformed)
-        self.bbox_letter = self.calc_bbox(self.points_letter_transformed)
-
-        self.size_shape = (
-            self.bbox_shape[2] - self.bbox_shape[0],
-            self.bbox_shape[3] - self.bbox_shape[1]
-        )
-        self.size_letter = (
-            self.bbox_letter[2] - self.bbox_letter[0],
-            self.bbox_letter[3] - self.bbox_letter[1]
-        )
-
-        # tmp fix cuz original pos defined above is a little not accurate
-        self.pos = (self.bbox_shape[2] + self.bbox_shape[0]) / 2, (self.bbox_shape[3] + self.bbox_shape[1]) / 2
-
-        larger_side = max(self.size_shape)
-        self.bbox_padded = (
-            self.pos[0] - (larger_side / 2) - 5,
-            self.pos[1] - (larger_side / 2) - 5,
-            self.pos[0] + (larger_side / 2) + 5,
-            self.pos[1] + (larger_side / 2) + 5
-        )
+        self.bbox_shape = layer_shape.getbbox()
+        self.bbox_letter = layer_letter.getbbox()
 
         # draw = ImageDraw.Draw(self.canvas)
-        # draw.point(self.pos, fill="purple")
-        # draw.rectangle(self.bbox_padded, outline="yellow")
         # draw.rectangle(self.bbox_shape, outline="blue")
         # draw.rectangle(self.bbox_letter, outline="red")
+        # self.canvas.save("tmp.png")
+
+        # layer_letter.save("tmp.png")

@@ -16,9 +16,11 @@ from src.pipeline.ground_layer import GroundLayer
 
 
 def generate_full(output_dir: Path):
-    shape_colour = random.choice(list(SuasColour))
+    # shape_colour = random.choice(list(SuasColour))
     shape = random.choice(list(SuasShape))
-    letter_colour = random.choice([o for o in list(SuasColour) if o != shape_colour])
+    # letter_colour = random.choice([o for o in list(SuasColour) if o != shape_colour])
+    shape_colour = SuasColour.YELLOW
+    letter_colour = SuasColour.ORANGE
     letter = random.choice(string.ascii_uppercase)
 
     g = GroundLayer()
@@ -41,13 +43,9 @@ def generate_full(output_dir: Path):
                 "shape": shape.name,
                 "letter_colour": letter_colour.name,
                 "letter": letter,
-                "pos": c.pos,
                 "rot": c.rot,
                 "bbox_shape": c.bbox_shape,
-                "size_shape": c.size_shape,
                 "bbox_letter": c.bbox_letter,
-                "size_letter": c.size_letter,
-                "bbox_padded": c.bbox_padded,
             },
             f, indent=4
         )
@@ -78,4 +76,4 @@ if __name__ == "__main__":
                 max_workers=None, file=sys.stdout, chunksize=1)
 
     # for i in tqdm(range(no_to_generate), file=sys.stdout):
-    # generate_full(None)
+    # generate_full(raw_output_dir)

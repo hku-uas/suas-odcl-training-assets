@@ -4,12 +4,13 @@ import sys
 from pathlib import Path
 
 import yaml
-from PIL import Image
+from PIL import Image, ImageOps
 from tqdm import tqdm
 from tqdm.contrib.concurrent import process_map
 
 from src.common.enums import SuasShape
 from src.definitions import root_dir
+from src.utils.transformation import transform_coords
 
 
 class Convert:
@@ -49,7 +50,7 @@ class Convert:
                 for b in ["images", "labels"]:
                     (dir_ds / a / b).mkdir(exist_ok=True)
             classes = [
-                ["cutout"],
+                ["cutout", "emergent"],
                 list([o.name for o in SuasShape]),
                 list(string.ascii_uppercase)
             ][i]
@@ -65,7 +66,25 @@ class Convert:
     def run(self):
         print("Generating dataset...")
         process_map(self.convert, self.paths_img, max_workers=None, file=sys.stdout)
-        # convert(paths_img[0])
+        # self.convert(self.paths_img[0])
+
+    def bbox_pos(self, bbox):
+        l, t, r, b = bbox
+        return (l + r) / 2, (t + b) / 2
+
+    def bbox_size(self, bbox):
+        l, t, r, b = bbox
+        w, h = r - l, b - t
+        return w, h
+
+    def find_max_length(self, bbox):
+        w, h = self.bbox_size(bbox)
+        return max(w, h)
+
+    # Find bbox center pos, make new bbox which centers it and pads it to be a square
+    def expand_bbox(self, bbox, length):
+        x, y = self.bbox_pos(bbox)
+        return x - length / 2, y - length / 2, x + length / 2, y + length / 2
 
     def convert(self, path_img: Path):
         loc = self.paths_img.index(path_img) / len(self.paths_img)
@@ -76,21 +95,29 @@ class Convert:
             d = json.loads(f.read())
 
         img_full = Image.open(path_img)
-        img_cropped = img_full.crop(d["bbox_padded"])
-        # img_cropped = ImageOps.grayscale(img_cropped)
-
         img_full.save(self.dir_ds_locate / set_name / "images" / path_img.name)
-        img_cropped.save(self.dir_ds_identify_shape / set_name / "images" / path_img.name)
-        img_cropped.save(self.dir_ds_identify_letter / set_name / "images" / path_img.name)
 
-        shape_w, shape_h = d["size_shape"]
-        letter_w, letter_h = d["size_letter"]
+        bbox_shape = d["bbox_shape"]
+        pos_shape = self.bbox_pos(bbox_shape)
+        bbox_letter = d["bbox_letter"]
+        cropped_bbox_length = max(self.bbox_size(bbox_shape)) + 10
+
+        img_shape_cropped = img_full.crop(self.expand_bbox(bbox_shape, cropped_bbox_length))
+        img_shape_cropped = ImageOps.grayscale(img_shape_cropped)
+        img_shape_cropped.save(self.dir_ds_identify_shape / set_name / "images" / path_img.name)
+
+        img_letter_cropped = img_full.crop(self.expand_bbox(bbox_letter, cropped_bbox_length))
+        img_letter_cropped = ImageOps.grayscale(img_letter_cropped)
+        img_letter_cropped.save(self.dir_ds_identify_letter / set_name / "images" / path_img.name)
+
+        shape_w, shape_h = self.bbox_size(bbox_shape)
+        letter_w, letter_h = self.bbox_size(bbox_letter)
 
         with open(self.dir_ds_locate / set_name / "labels" / f"{path_img.stem}.txt", "w") as f:
             f.write(
                 f'{int(SuasShape[d["shape"]])} '
-                f'{d["pos"][0] / img_full.width} '
-                f'{d["pos"][1] / img_full.height} '
+                f'{pos_shape[0] / img_full.width} '
+                f'{pos_shape[1] / img_full.height} '
                 f'{shape_w / img_full.width} '
                 f'{shape_h / img_full.height} '
             )
@@ -100,8 +127,8 @@ class Convert:
                 f'{int(SuasShape[d["shape"]])} '
                 f'.5 '
                 f'.5 '
-                f'{shape_w / img_cropped.width} '
-                f'{shape_h / img_cropped.height} '
+                f'{shape_w / img_shape_cropped.width} '
+                f'{shape_h / img_shape_cropped.height} '
             )
 
         with open(self.dir_ds_identify_letter / set_name / "labels" / f"{path_img.stem}.txt", "w") as f:
@@ -109,8 +136,8 @@ class Convert:
                 f'{ord(d["letter"]) - ord("A")} '
                 f'.5 '
                 f'.5 '
-                f'{letter_w / img_cropped.width} '
-                f'{letter_h / img_cropped.height} '
+                f'{letter_w / img_letter_cropped.width} '
+                f'{letter_h / img_letter_cropped.height} '
             )
 
 

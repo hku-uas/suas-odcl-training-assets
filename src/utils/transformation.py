@@ -17,7 +17,7 @@ def translate(coordinates, translation_vector):
     return coordinates + np.array(translation_vector)
 
 
-def transform_coords(coordinates, angle_degrees, scale_factor, translation_vector):
+def transform_coords(coordinates, translation_vector, angle_degrees, scale_factor):
     rotated = rotate(coordinates, angle_degrees)
     scaled = scale(rotated, [scale_factor, scale_factor])
     translated = translate(scaled, translation_vector)
