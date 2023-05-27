@@ -10,8 +10,8 @@ class SuasColour(Enum):
     GREEN = "#00FF00"
     YELLOW = "#FFFF00"
     PURPLE = "#800080"
-    BROWN = "#A52A2A"
-    ORANGE = "#FFA500"
+    BROWN = "#964B00"
+    ORANGE = "#FF8000"
 
 
 class SuasShape(IntEnum):

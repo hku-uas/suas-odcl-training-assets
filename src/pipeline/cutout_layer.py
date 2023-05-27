@@ -27,21 +27,21 @@ class CutoutLayer:
     font_path = next((root_dir / "assets" / "foamboard_letter_fonts").glob("*.otf"), None)
     font = ImageFont.truetype(str(font_path.resolve()), 100)
 
-    @staticmethod
-    def trace_contour_points(layer: PIL.Image):
-        cv_layer = np.array(layer)
-
-        # Split the image into its channels
-        r, g, b, a = cv2.split(cv_layer)
-
-        # Threshold the alpha channel to create a binary mask
-        ret, thresh = cv2.threshold(a, 0, 255, cv2.THRESH_BINARY)
-
-        # Find the contours of the binary mask
-        contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-        keypoints = np.vstack(contours).squeeze()
-
-        return keypoints
+    # @staticmethod
+    # def trace_contour_points(layer: PIL.Image):
+    #     cv_layer = np.array(layer)
+    #
+    #     # Split the image into its channels
+    #     r, g, b, a = cv2.split(cv_layer)
+    #
+    #     # Threshold the alpha channel to create a binary mask
+    #     ret, thresh = cv2.threshold(a, 0, 255, cv2.THRESH_BINARY)
+    #
+    #     # Find the contours of the binary mask
+    #     contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    #     keypoints = np.vstack(contours).squeeze()
+    #
+    #     return keypoints
 
     @staticmethod
     def calc_bbox(coords: np.ndarray):
@@ -81,6 +81,8 @@ class CutoutLayer:
 
         # Set colour of cardboard
         shape_colour_rgba = ImageColor.getcolor(shape_colour.value, "RGB")
+
+        #TODO fix rgb_to_hsv should input 0-1 values lollll
         shape_colour_hsv = colorsys.rgb_to_hsv(*shape_colour_rgba)
         pixel_data = layer_shape.load()
         for y in range(layer_size[0]):
@@ -119,7 +121,7 @@ class CutoutLayer:
 
         # Pasting the small cutout layer on the big canvas with random position and rotation
         layer_shape = layer_shape.rotate(self.rot, expand=True, resample=Image.BILINEAR)
-        layer_shape = ImageOps.scale(layer_shape, .2)
+        layer_shape = ImageOps.scale(layer_shape, .15)
 
         self.canvas.paste(
             layer_shape,
