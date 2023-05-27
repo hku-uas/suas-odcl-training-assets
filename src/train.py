@@ -18,5 +18,16 @@ def train(dir_dataset: Path):
     model.train(data=str(path_data_yaml), epochs=100, imgsz=640)
 
 
-for o in dir_output.glob("dataset_locate"):
+dir_datasets = [
+    dir_output / "dataset_locate",
+    dir_output / "dataset_identify_letters",
+    dir_output / "dataset_identify_shapes",
+]
+for o in dir_datasets:
+    if not o.exists():
+        print(f"{o} does not exist.")
+        exit()
+
+for o in dir_datasets:
+    print(f"Training {o}...")
     train(o)
