@@ -28,7 +28,7 @@ class Convert:
             for p in o.rglob("*"):
                 if p.is_dir():
                     continue
-                if p.suffix not in [".jpg", ".png", ".txt", ".yaml"]:
+                if p.suffix not in [".jpg", ".png", ".txt", ".yaml", ".pt", ".cache", ".csv"]:
                     print(f"Abnormal file in directories: {p}")
                     exit()
                 files_to_be_cleaned.append(p)
@@ -56,16 +56,16 @@ class Convert:
             ][i]
             with open(dir_ds / "data.yaml", "w") as f:
                 yaml.dump({
-                    "train": "../train/images",
-                    "val": "../valid/images",
-                    "test": "../test/images",
+                    "train": "./train/images",
+                    "val": "./valid/images",
+                    "test": "./test/images",
                     "nc": len(classes),
                     "names": classes
                 }, f)
 
     def run(self):
         print("Generating dataset...")
-        process_map(self.convert, self.paths_img, max_workers=None, file=sys.stdout)
+        process_map(self.convert, self.paths_img, max_workers=None, file=sys.stdout, chunksize=1)
         # self.convert(self.paths_img[0])
 
     def bbox_pos(self, bbox):
@@ -115,7 +115,7 @@ class Convert:
 
         with open(self.dir_ds_locate / set_name / "labels" / f"{path_img.stem}.txt", "w") as f:
             f.write(
-                f'{int(SuasShape[d["shape"]])} '
+                f'0 '
                 f'{pos_shape[0] / img_full.width} '
                 f'{pos_shape[1] / img_full.height} '
                 f'{shape_w / img_full.width} '
