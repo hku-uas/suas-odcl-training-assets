@@ -75,7 +75,7 @@ if __name__ == "__main__":
 
     process_map(generate_full,
                 [raw_output_dir for o in range(0, no_to_generate)],
-                max_workers=None, file=sys.stdout, chunksize=1)
+                max_workers=2, file=sys.stdout, chunksize=1)
 
     # for i in tqdm(range(no_to_generate), file=sys.stdout):
     # generate_full(None)
