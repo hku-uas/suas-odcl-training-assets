@@ -1,5 +1,5 @@
 import random
-from threading import Lock
+from multiprocessing import Lock
 
 from PIL import Image
 
