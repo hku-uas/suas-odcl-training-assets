@@ -2,11 +2,9 @@ import random
 from threading import Lock
 
 from PIL import Image
-from PIL.ImageFile import ImageFile
 
 from src.definitions import root_dir
 
-ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 class GroundLayer:
     aerial_bgs = []
@@ -17,6 +15,8 @@ class GroundLayer:
 
     def __init__(self):
         # Create canvas
+
+        print(GroundLayer.aerial_bgs)
         self.canvas = Image.new("RGBA", (512, 512), (0, 0, 0, 255))
 
         # Paste background on canvas
