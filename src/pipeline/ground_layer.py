@@ -19,13 +19,14 @@ class GroundLayer:
         self.canvas = Image.new("RGBA", (512, 512), (0, 0, 0, 255))
 
         # Paste background on canvas
+        hmm = random.choice(GroundLayer.aerial_bgs)
         with GroundLayer.mutex:
             try:
-                hmm = random.choice(GroundLayer.aerial_bgs)
                 bg_img = hmm.copy()
             except OSError:
                 print("uiyooooouiyooooouiyooooouiyooooouiyooooouiyooooouiyooooouiyooooouiyooooouiyooooouiyooooo")
                 print(hmm)
+                exit()
 
         bg_img = bg_img.rotate(random.uniform(0, 100), expand=True)
         # bg_img.thumbnail((canvas.size[0], canvas.size[1]))
