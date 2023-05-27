@@ -16,11 +16,9 @@ from src.pipeline.ground_layer import GroundLayer
 
 
 def generate_full(output_dir: Path):
-    # shape_colour = random.choice(list(SuasColour))
+    shape_colour = random.choice(list(SuasColour))
     shape = random.choice(list(SuasShape))
-    # letter_colour = random.choice([o for o in list(SuasColour) if o != shape_colour])
-    shape_colour = SuasColour.YELLOW
-    letter_colour = SuasColour.ORANGE
+    letter_colour = random.choice([o for o in list(SuasColour) if o != shape_colour])
     letter = random.choice(string.ascii_uppercase)
 
     g = GroundLayer()

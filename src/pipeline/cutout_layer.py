@@ -113,10 +113,10 @@ class CutoutLayer:
         layer_letter = self.transform_image(layer_letter, self.pos, self.rot, .15)
 
         # Reduce contrast of canvas
+        layer_shape = ImageEnhance.Contrast(layer_shape).enhance(.9)
         self.canvas.paste(layer_shape, (0, 0), mask=layer_shape)
         self.canvas.paste(layer_letter, (0, 0), mask=layer_letter)
-        # self.canvas = ImageEnhance.Color(self.canvas).enhance(1.5)
-        self.canvas = ImageEnhance.Contrast(self.canvas).enhance(.8)
+        self.canvas = ImageEnhance.Brightness(self.canvas).enhance(.9)
         self.canvas = self.canvas.filter(ImageFilter.GaussianBlur(radius=.5))
 
         self.bbox_shape = layer_shape.getbbox()

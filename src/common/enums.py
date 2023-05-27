@@ -2,16 +2,16 @@ from enum import Enum, IntEnum
 
 
 class SuasColour(Enum):
-    WHITE = "#FFFFFF"
-    BLACK = "#000000"
-    GRAY = "#808080"
-    RED = "#FF0000"
-    BLUE = "#0000FF"
-    GREEN = "#00FF00"
-    YELLOW = "#FFFF00"
-    PURPLE = "#800080"
+    WHITE = "#F3F7FD"
+    BLACK = "#22272C"
+    GRAY = "#949CA3"
+    RED = "#BA0F3C"
+    BLUE = "#1B71D3"
+    GREEN = "#37905F"
+    YELLOW = "#F2D519"
+    PURPLE = "#643D98"
     BROWN = "#964B00"
-    ORANGE = "#FF8000"
+    ORANGE = "#FE8512"
 
 
 class SuasShape(IntEnum):
