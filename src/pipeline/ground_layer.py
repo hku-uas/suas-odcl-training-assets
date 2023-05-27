@@ -16,12 +16,16 @@ class GroundLayer:
     def __init__(self):
         # Create canvas
 
-        print(GroundLayer.aerial_bgs)
         self.canvas = Image.new("RGBA", (512, 512), (0, 0, 0, 255))
 
         # Paste background on canvas
         with GroundLayer.mutex:
-            bg_img = random.choice(GroundLayer.aerial_bgs).copy()
+            try:
+                hmm = random.choice(GroundLayer.aerial_bgs)
+                bg_img = hmm.copy()
+            except OSError:
+                print("uiyooooouiyooooouiyooooouiyooooouiyooooouiyooooouiyooooouiyooooouiyooooouiyooooouiyooooo")
+                print(hmm)
 
         bg_img = bg_img.rotate(random.uniform(0, 100), expand=True)
         # bg_img.thumbnail((canvas.size[0], canvas.size[1]))
