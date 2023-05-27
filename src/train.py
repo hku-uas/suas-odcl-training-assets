@@ -15,7 +15,7 @@ def train(dir_dataset: Path):
     os.chdir(str(dir_dataset))
     path_data_yaml = (dir_dataset / "data.yaml").resolve()
     model = YOLO('yolov8n.pt')
-    model.train(data=str(path_data_yaml), epochs=100, imgsz=640)
+    model.train(data=str(path_data_yaml), epochs=100, imgsz=100)
 
 
 dir_datasets = [
