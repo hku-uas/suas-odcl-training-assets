@@ -7,12 +7,15 @@ from itertools import repeat
 from pathlib import Path
 
 from PIL import Image
+from PIL.ImageFile import ImageFile
 from tqdm.contrib.concurrent import process_map
 
 from src.common.enums import SuasColour, SuasShape
 from src.definitions import root_dir
 from src.pipeline.cutout_layer import CutoutLayer
 from src.pipeline.ground_layer import GroundLayer
+
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
 def generate_full(output_dir: Path):
