@@ -2,6 +2,7 @@ import colorsys
 import math
 import random
 from pathlib import Path
+from threading import Lock
 
 import PIL
 import cv2
@@ -15,6 +16,7 @@ from src.utils.transformation import transform_coords
 
 class CutoutLayer:
     img_shapes = []
+    mutex = Lock()
     with Image.open(
             next((root_dir / "assets" / "foamboard_shapes").glob("*.png"), None)
     ) as all_shape_png:
@@ -70,7 +72,8 @@ class CutoutLayer:
         self.rot = random.uniform(0, 360)
 
         layer_shape = Image.new(mode="RGBA", size=layer_size)
-        img_shape = CutoutLayer.img_shapes[shape.value]
+        with CutoutLayer.mutex:
+            img_shape = CutoutLayer.img_shapes[shape.value]
         layer_shape.paste(
             img_shape,
             (
@@ -102,13 +105,14 @@ class CutoutLayer:
         # Add letter to canvas
         layer_letter = Image.new(mode="RGBA", size=layer_size)
         draw = ImageDraw.Draw(layer_letter)
-        _, _, w, h = draw.textbbox((0, 0), letter, font=CutoutLayer.font)
-        draw.text(
-            ((layer_size[0] - w) / 2, (layer_size[0] - h) / 2 - 10),
-            letter,
-            font=CutoutLayer.font,
-            fill=letter_colour.value
-        )
+        with CutoutLayer.mutex:
+            _, _, w, h = draw.textbbox((0, 0), letter, font=CutoutLayer.font)
+            draw.text(
+                ((layer_size[0] - w) / 2, (layer_size[0] - h) / 2 - 10),
+                letter,
+                font=CutoutLayer.font,
+                fill=letter_colour.value
+            )
 
         layer_shape.paste(layer_letter, (0, 0), mask=layer_letter)
         points_letter = self.trace_contour_points(layer_letter)

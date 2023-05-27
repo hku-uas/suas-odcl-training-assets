@@ -1,14 +1,15 @@
 import random
-from pathlib import Path
+from threading import Lock
 
 from PIL import Image
 
 from src.definitions import root_dir
-from src.utils.func_static_vars import static_vars
 
 
 class GroundLayer:
     aerial_bgs = []
+    mutex = Lock()
+
     for bg_path in (root_dir / "assets" / "bg_field").glob("*.jpg"):
         aerial_bgs.append(Image.open(bg_path))
 
@@ -17,7 +18,9 @@ class GroundLayer:
         self.canvas = Image.new("RGBA", (512, 512), (0, 0, 0, 255))
 
         # Paste background on canvas
-        bg_img = random.choice(GroundLayer.aerial_bgs).copy()
+        with GroundLayer.mutex:
+            bg_img = random.choice(GroundLayer.aerial_bgs).copy()
+
         bg_img = bg_img.rotate(random.uniform(0, 100), expand=True)
         # bg_img.thumbnail((canvas.size[0], canvas.size[1]))
         bg_img = bg_img.resize((int(self.canvas.size[0] * 2.5), int(self.canvas.size[1] * 2.5)))
