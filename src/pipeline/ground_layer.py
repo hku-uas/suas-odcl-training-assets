@@ -2,9 +2,11 @@ import random
 from threading import Lock
 
 from PIL import Image
+from PIL.ImageFile import ImageFile
 
 from src.definitions import root_dir
 
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 class GroundLayer:
     aerial_bgs = []
