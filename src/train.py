@@ -11,23 +11,23 @@ if not dir_output.exists():
     exit()
 
 
-def train(dir_dataset: Path):
+def train(dir_dataset: Path, imgsz: int):
     os.chdir(str(dir_dataset))
     path_data_yaml = (dir_dataset / "data.yaml").resolve()
     model = YOLO('yolov8n.pt')
-    model.train(data=str(path_data_yaml), epochs=100, imgsz=100)
+    model.train(data=str(path_data_yaml), epochs=100, imgsz=imgsz)
 
 
 dir_datasets = [
-    dir_output / "dataset_locate",
-    dir_output / "dataset_identify_letters",
-    dir_output / "dataset_identify_shapes",
+    (dir_output / "dataset_locate", 50),
+    (dir_output / "dataset_identify_letters", 10),
+    (dir_output / "dataset_identify_shapes", 10),
 ]
-for o in dir_datasets:
-    if not o.exists():
-        print(f"{o} does not exist.")
+for p, s in dir_datasets:
+    if not p.exists():
+        print(f"{p} does not exist.")
         exit()
 
-for o in dir_datasets:
-    print(f"Training {o}...")
-    train(o)
+for p, s in dir_datasets:
+    print(f"Training {p}...")
+    train(p, s)
