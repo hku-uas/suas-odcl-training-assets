@@ -82,11 +82,20 @@ if __name__ == '__main__':
                 exit()
             dir_datasets = [(p, s) for p, s in dir_datasets if p.stem not in args.exclude]
 
-    for p, s in dir_datasets:
-        if not p.exists():
-            print(f"{p} does not exist.")
-            exit()
+    if args.clean_only:
+        clean()
+    elif args.export_only:
+        export()
+    else:
+        clean()
 
-    for p, s in dir_datasets:
-        print(f"Training {p}...")
-        train(p, s)
+        for p, s in dir_datasets:
+            if not p.exists():
+                print(f"{p} does not exist.")
+                exit()
+
+        for p, s in dir_datasets:
+            print(f"Training {p}...")
+            train(p, s)
+
+        export()
