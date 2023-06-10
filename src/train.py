@@ -53,7 +53,7 @@ if __name__ == '__main__':
             continue
 
         dir_weights_output.mkdir(exist_ok=True)
-        dir_weights_output_dated = dir_weights_output / datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        dir_weights_output_dated = dir_weights_output / datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
         dir_weights_output_dated.mkdir(exist_ok=True)
 
         print(f"Copying {path_best_pt} to {dir_weights_output_dated}...")
