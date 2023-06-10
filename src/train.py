@@ -14,14 +14,6 @@ if __name__ == '__main__':
         print(f"{dir_output} does not exist.")
         exit()
 
-
-    def train(dir_dataset: Path, imgsz: int):
-        os.chdir(str(dir_dataset))
-        path_data_yaml = (dir_dataset / "data.yaml").resolve()
-        model = YOLO('yolov8n.pt')
-        model.train(data=str(path_data_yaml), epochs=100, imgsz=imgsz, cache="ram")
-
-
     dir_datasets = [
         (dir_output / "dataset_locate", 50),
         (dir_output / "dataset_identify_letters", 10),
@@ -32,6 +24,24 @@ if __name__ == '__main__':
         if not p.exists():
             print(f"{p} does not exist.")
             exit()
+
+    print("Deleting previously trained weights...")
+    for p, s in dir_datasets:
+        dir_runs_train = p / "runs"
+        if not dir_runs_train.exists():
+            print(f"{dir_runs_train} does not exist. Skipping...")
+            continue
+
+        print(f"Deleting {dir_runs_train}...")
+        shutil.rmtree(dir_runs_train)
+
+
+    def train(dir_dataset: Path, imgsz: int):
+        os.chdir(str(dir_dataset))
+        path_data_yaml = (dir_dataset / "data.yaml").resolve()
+        model = YOLO('yolov8n.pt')
+        model.train(data=str(path_data_yaml), epochs=100, imgsz=imgsz, cache="ram")
+
 
     if not "--extract" in sys.argv:
         for p, s in dir_datasets:
