@@ -73,7 +73,7 @@ if __name__ == '__main__':
         exit()
 
     dir_datasets = [
-        (dir_output / "dataset_locate", 640),
+        (dir_output / "dataset_locate", 320),
         (dir_output / "dataset_identify_letters", 160),
         (dir_output / "dataset_identify_shapes", 160),
     ]
