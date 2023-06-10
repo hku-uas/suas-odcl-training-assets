@@ -103,11 +103,11 @@ class Convert:
         cropped_bbox_length = max(self.bbox_size(bbox_shape)) + 10
 
         img_shape_cropped = img_full.crop(self.expand_bbox(bbox_shape, cropped_bbox_length))
-        img_shape_cropped = ImageOps.grayscale(img_shape_cropped)
+        # img_shape_cropped = ImageOps.grayscale(img_shape_cropped)
         img_shape_cropped.save(self.dir_ds_identify_shape / set_name / "images" / path_img.name)
 
         img_letter_cropped = img_full.crop(self.expand_bbox(bbox_letter, cropped_bbox_length))
-        img_letter_cropped = ImageOps.grayscale(img_letter_cropped)
+        # img_letter_cropped = ImageOps.grayscale(img_letter_cropped)
         img_letter_cropped.save(self.dir_ds_identify_letter / set_name / "images" / path_img.name)
 
         shape_w, shape_h = self.bbox_size(bbox_shape)
