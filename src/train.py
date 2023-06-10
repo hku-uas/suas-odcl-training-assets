@@ -56,4 +56,5 @@ if __name__ == '__main__':
         dir_weights_output_dated = dir_weights_output / datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         dir_weights_output_dated.mkdir(exist_ok=True)
 
+        print(f"Copying {path_best_pt} to {dir_weights_output_dated}...")
         shutil.copy(path_best_pt, dir_weights_output_dated / (p.stem + ".pt"))
