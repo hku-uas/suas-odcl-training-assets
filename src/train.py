@@ -71,9 +71,9 @@ if __name__ == '__main__':
         exit()
 
     dir_datasets = [
-        (dir_output / "dataset_locate", 64),
-        (dir_output / "dataset_identify_letters", 16),
-        (dir_output / "dataset_identify_shapes", 16),
+        (dir_output / "dataset_locate", 32),
+        (dir_output / "dataset_identify_letters", 32),
+        (dir_output / "dataset_identify_shapes", 32),
     ]
     if args.skip:
         for n in args.skip:
