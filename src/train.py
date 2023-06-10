@@ -16,7 +16,7 @@ if __name__ == '__main__':
         os.chdir(str(dir_dataset))
         path_data_yaml = (dir_dataset / "data.yaml").resolve()
         model = YOLO('yolov8n.pt')
-        model.train(data=str(path_data_yaml), epochs=100, imgsz=imgsz)
+        model.train(data=str(path_data_yaml), epochs=100, imgsz=imgsz, cache=True)
 
 
     dir_datasets = [
