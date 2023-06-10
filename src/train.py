@@ -62,6 +62,8 @@ if __name__ == '__main__':
                         help='Export the weights only after training (After .pt are generated in each dataset directory)')
     parser.add_argument("--skip", "-s", action="append",
                         help="Skip a dataset from cleaning, training and exporting (Specify the dataset directory name, e.g., dataset_locate)")
+    parser.add_argument("--only", "-o", action="append",
+                        help="Include only a dataset from cleaning, training and exporting (Specify the dataset directory name, e.g., dataset_locate)")
 
     args = parser.parse_args()
 
@@ -75,7 +77,13 @@ if __name__ == '__main__':
         (dir_output / "dataset_identify_letters", 160),
         (dir_output / "dataset_identify_shapes", 160),
     ]
-    if args.skip:
+    if args.only:
+        for n in args.only:
+            if n not in [p.stem for p, s in dir_datasets]:
+                print(f"Dataset {n} does not exist.")
+                exit()
+            dir_datasets = [(p, s) for p, s in dir_datasets if p.stem == n]
+    elif args.skip:
         for n in args.skip:
             if n not in [p.stem for p, s in dir_datasets]:
                 print(f"Dataset {n} does not exist.")
