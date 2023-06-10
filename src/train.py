@@ -40,7 +40,14 @@ if __name__ == '__main__':
 
     dir_weights_output = root_dir / "output" / "weights"
     for p, s in dir_datasets:
-        path_best_pt = p / "runs" / "detect" / "train" / "weights" / "best.pt"
+        dir_runs_detect = p / "runs" / "detect"
+
+        subdirs = list(sorted(dir_runs_detect.glob("*")))
+        if len(subdirs) == 0:
+            print(f"{dir_runs_detect} does not contain any subdirectories. Skipping...")
+            continue
+        path_best_pt = subdirs[-1] / "weights" / "best.pt"
+
         if not path_best_pt.exists():
             print(f"{path_best_pt} does not exist. Skipping...")
             continue
