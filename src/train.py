@@ -1,4 +1,7 @@
+import datetime
 import os
+import shutil
+import sys
 from pathlib import Path
 
 from ultralytics import YOLO
@@ -24,11 +27,26 @@ if __name__ == '__main__':
         (dir_output / "dataset_identify_letters", 10),
         (dir_output / "dataset_identify_shapes", 10),
     ]
+
     for p, s in dir_datasets:
         if not p.exists():
             print(f"{p} does not exist.")
             exit()
 
+    if not "--extract" in sys.argv:
+        for p, s in dir_datasets:
+            print(f"Training {p}...")
+            train(p, s)
+
+    dir_weights_output = root_dir / "output" / "weights"
     for p, s in dir_datasets:
-        print(f"Training {p}...")
-        train(p, s)
+        path_best_pt = p / "runs" / "detect" / "train" / "weights" / "best.pt"
+        if not path_best_pt.exists():
+            print(f"{path_best_pt} does not exist. Skipping...")
+            continue
+
+        dir_weights_output.mkdir(exist_ok=True)
+        dir_weights_output_dated = dir_weights_output / datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        dir_weights_output_dated.mkdir(exist_ok=True)
+
+        shutil.copy(path_best_pt, dir_weights_output_dated / (p.stem + ".pt"))
