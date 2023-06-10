@@ -80,7 +80,7 @@ if __name__ == '__main__':
             if n not in [p.stem for p, s in dir_datasets]:
                 print(f"Dataset {n} does not exist.")
                 exit()
-            dir_datasets = [(p, s) for p, s in dir_datasets if p.stem not in args.exclude]
+            dir_datasets = [(p, s) for p, s in dir_datasets if p.stem not in args.skip]
 
     if args.clean_only:
         clean()
